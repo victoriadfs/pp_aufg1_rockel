@@ -7,6 +7,14 @@
 #include <SAT.hpp>
 #include <wahrheitsbelegung.hpp>
 
+// Das muss eigentlich keine Klasse sein.
+// Flexibler wäre eine Funktion
+// std::optional<Wahrheitsbelegung> loese_mit_backtracking_algo(const SAT& instanz);
+// Diese würde eine Wahrheitsbelegung in dem std::optional haben,
+// wenn es eine erfüllende Wahrheitsbelegung gibt
+// Ansonsten returned sie std::nullopt
+// Man würde dann das ausgeben der Lösung außerhalb machen
+
 class Backtracking_Loesung {
     public:
     Backtracking_Loesung (const SAT& instanz);

@@ -22,6 +22,7 @@ const std::vector<Variable>& SAT:: variablen() const {
     return variablen_;
 }
 
+// Hier würde sich ein assert(var_id > 0) auf jeden Fall anbieten.
 Variable SAT::var(const unsigned int& var_id) const {
     return variablen_[var_id - 1]; //speichern Variablen mit einen Shift -1 in variablen_
 }

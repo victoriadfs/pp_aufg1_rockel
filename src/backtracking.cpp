@@ -172,6 +172,56 @@ unsigned int Backtracking_Loesung::variable_nicht_gesetzt(const unsigned int& va
 
 //Backtracking:
 
+/**
+ * Ich finde Deine implementierung grade immer noch verhältnismäßig komplex.
+ * Das liegt glaube ich daran, dass es sehr indirekt aufgeschrieben ist.
+ * Es gibt 2 Punkte, die das verursachen.
+ * 1. Die Funktionen die in aus der while schleife aufgerufen werden machen mehr als sie sollten.
+ *    Sie setzen nicht nur die variable um, sondern prüfen (ohne das im namen zu sagen)
+ *    auch noch ob die Wahrheitsbelegung schon einen widerspruch hat oder nicht
+ *    und suchen dann noch den nächsten index raus, also increment, oder backtracking.
+ * 2. Basierend darauf ist hier der pfad in viele kleine Funktionen verzweigt
+ *    und erreicht auch noch eine relativ hohe tiefe.
+ *    Dh. um zu verstehen, was hier passiert, muss man den Code-pfad über viele 
+ *    verzweigungen verfolgen.
+ *    Es gibt dazu einen schönen talk von der CppCon 2019: 
+ *    Auf youtube: 'CppCon 2019: Chandler Carruth “There Are No Zero-cost Abstractions”'
+ *    Der behandelt noch viel mehr und Du musst Dir den nicht ansehen. Ist aber sehenswert.
+ * 
+ * Ok, jetzt zu der Frage, wie man das lösen kann. 
+ * Ich glaube ein hilfreicher Ansatz ist, sich das als mathematischen pseudocode vorzustellen,
+ * in dem erlaubt ist einfache tasks durch text auszudrücken und dann zu sehen, wie das aussieht.
+ * 
+ * Ich hab das mal für Deinen algorithmus gemacht. So würde ich den im (semi-) pseudocode
+ * aufschreiben:
+ * 
+ * Wahrheitsbelegung belegung = Alle nicht gesetzt
+ * VariableIndex current_variable = 1;
+ * while (current_variable > 0) {
+ *    if (current_variable > Anzahl variablen) {
+ *       return belegung;
+ *    }
+ *    if ( belegung.wert(current_variable) == VariablenWert::falsch ) {
+ *       reset variable ( current_variable);
+ *       --current_variable;
+ *       continue;
+ *    }
+ *    
+ *    bool widerspruch = false;
+ *    if ( belegung.wert(current_variable) == VariablenWert::ungesetzt ) {
+ *       widerspruch = setze und prüfe auf widerspruch (current_variable, VariablenWert::wahr);
+ *    } else {
+ *       reset variable ( current_variable );
+ *       widerspruch = setze und prüfe auf widerspruch (current_variable, VariablenWert::falsch);
+ *    }
+ *    if (not widerspruch) {
+ *       ++current_variable;
+ *    }
+ * }
+ * return Keine Lösung (std::nullopt)
+ */
+
+
 /*Beim Backtracking gehen wir folgendes Schema durch:
     1. Variable auf wahr setzten, wenn es geht gehen wir zur naechsten Variable sonst zu 2.
     2. Variable auf falsch setzten, wenn es geht gehen wir zur naechsten Variable sonst zu 3.

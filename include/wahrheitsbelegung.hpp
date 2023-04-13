@@ -16,6 +16,19 @@ class Wahrheitsbelegung {
     const std::vector<uint_fast8_t>& gesetzt() const;
     unsigned int var_gesetzt(const unsigned int& var_id) const;
 
+    // Hier bietet es sich an ein enum zu verwenden für den Zustand
+    // einer Variable. Das macht es noch einfacher lesbar:
+    // enum class VariablenWert {
+    //    wahr,
+    //    falsch,
+    //    ungesetzt
+    // };
+    // Dann kannst Du Dir den 2. vector sparen und nur
+    // std::vector<VariablenWert> belegung_;
+    // speichern.
+    // var_nicht_gesetzt kannst Du dann z.B. implementieren als  
+    // belegung_[var_id-1] = VariablenWert::ungesetzt;
+    
     //Wahrheitsbelegung aendern:
     void var_setzten(const unsigned int& var_id, const uint_fast8_t& wahrheitswert);
     void var_nicht_gesetzt(const unsigned int& var_id);

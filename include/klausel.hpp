@@ -1,8 +1,15 @@
 #include <vector>
 #include <iostream>
 
+// Für die Klausel-Indizes wäre ein typedef ebenfalls hilfreich
+// z.B. using KlauselIndex = unsigned int;
+
 class Klausel {
     public:
+    // Ebenfalls ohne reference. Siehe variable.hpp.
+    // Ich werde das an den restlichen Stellen nicht mehr schreiben,
+    // Aber natürlich gilt das für alle const unsigned int&, 
+    // die hier vorkommen.
     Klausel(const unsigned int& klausel_id);
 
     //Attribute der Klausel ausgeben:
