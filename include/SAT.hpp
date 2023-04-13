@@ -19,9 +19,14 @@ class SAT {
     unsigned int anz_var() const;
     unsigned int anz_klausel() const;
     const std::vector<Variable>& variablen() const;
+    // Hier <----
     Variable var(const unsigned int& var_id) const;
     const std::vector<Klausel>& klauseln() const;
+    // und hier <-----
     Klausel klausel(const unsigned int& klausel_id) const;
+    // sind die beiden gründe, aus denen Dein Programm langsam ist.
+    // Variable und Klausel werden jeweils kopiert. Du solltest sie 
+    // als const reference zurückgeben.
 
     //Klausel hinzufuegen:
     void klausel_hinzu(const Klausel& neue_klausel);
