@@ -1,6 +1,6 @@
 #include <vector>
 #include <iostream
-#include <cassert>>
+#include <cassert>
 #pragma once
 typedef unsigned int VariableIndex;
 typedef unsigned int KlauselIndex;
