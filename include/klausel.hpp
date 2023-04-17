@@ -1,5 +1,5 @@
 #include <vector>
-#include <iostream
+#include <iostream>
 #include <cassert>
 #pragma once
 typedef unsigned int VariableIndex;
