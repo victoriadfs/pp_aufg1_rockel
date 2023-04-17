@@ -5,27 +5,32 @@ In den vectoren kommt immer ein id - 1 shift vor dem sich der user bewusst mache
 */
 #include <vector>
 #include <iostream>
+#include <cassert>
+#pragma once
+typedef unsigned int VariableIndex;
+
+enum class VariableWert {
+    wahr,
+    falsch,
+    ungesetzt
+};
+
 class Wahrheitsbelegung {
     public:
-    Wahrheitsbelegung(const unsigned int& anz_var);
+    Wahrheitsbelegung(const unsigned int anz_var);
 
-    //Attribute Wahrheitsbeleging ausgeben:
+    //Attribute ausgeben:
     unsigned int anz_var() const;
-    const std::vector<uint_fast8_t>& belegung() const;
-    unsigned int var_wert (const unsigned int& var_id) const;
-    const std::vector<uint_fast8_t>& gesetzt() const;
-    unsigned int var_gesetzt(const unsigned int& var_id) const;
+    const std::vector<VariableWert>& belegung() const;
+    VariableWert var_wert(const VariableIndex var_id) const;
 
     //Wahrheitsbelegung aendern:
-    void var_setzten(const unsigned int& var_id, const uint_fast8_t& wahrheitswert);
-    void var_nicht_gesetzt(const unsigned int& var_id);
+    void var_wert_aendern(const VariableIndex var_id, const VariableWert neuer_wert);
 
-    //Ausgeben der Wahrheitsbelegung:
-    void print() const; //maybe meter una exception si uno no esta gesetzt
-
-
+    //Ausdrucken der Wahrheitsbelegung
+    void print() const;
+    
     private:
     const unsigned int anz_var_;
-    std::vector<uint_fast8_t> belegung_;
-    std::vector<uint_fast8_t> gesetzt_;
+    std::vector<VariableWert> belegung_;
 };

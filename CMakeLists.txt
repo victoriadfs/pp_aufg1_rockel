@@ -14,20 +14,26 @@ include_directories(external)
 add_executable(base_test examples/main.cpp src/SAT.cpp
     src/klausel.cpp
     src/variable.cpp
+    src/DIMACS_einlesen.cpp
     src/backtracking.cpp
-    src/wahrheitsbelegung.cpp)
+    src/wahrheitsbelegung.cpp
+    src/belegung_wahr.cpp)
     
 add_executable(opt_test examples/main.cpp src/SAT.cpp
     src/klausel.cpp
     src/variable.cpp
+    src/DIMACS_einlesen.cpp
     src/backtracking.cpp
-    src/wahrheitsbelegung.cpp)
+    src/wahrheitsbelegung.cpp
+    src/belegung_wahr.cpp)
 
 add_executable(san_test examples/main.cpp src/SAT.cpp
     src/klausel.cpp
     src/variable.cpp
+    src/DIMACS_einlesen.cpp
     src/backtracking.cpp
-    src/wahrheitsbelegung.cpp)
+    src/wahrheitsbelegung.cpp
+    src/belegung_wahr.cpp)
 
 target_compile_options(san_test PRIVATE -fsanitize=address -fsanitize=undefined)
 target_link_options(san_test PRIVATE -fsanitize=address -fsanitize=undefined)
