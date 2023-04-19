@@ -25,9 +25,9 @@ Klausel neue_klausel(const std::string& line, const KlauselIndex klausel_id, con
     return neue_klausel;
 }
 
-SAT SAT_initialisieren(const std::string& line, unsigned int& anz_klausel){
+std::pair<SAT, unsigned int> SAT_initialisieren(const std::string& line){
     std::string p, cnf;
-    int anz_var;
+    unsigned int anz_var, anz_klausel;
     std::stringstream ss(line); 
     ss >> p >> cnf >> anz_var >> anz_klausel; 
     if (not ss) {
@@ -35,13 +35,13 @@ SAT SAT_initialisieren(const std::string& line, unsigned int& anz_klausel){
     }
 
     if (cnf == "cnf") {
-        return SAT(anz_var); //SAT Instanz inistiallisiert
+        return std::make_pair(SAT(anz_var),anz_klausel); //SAT Instanz inistiallisiert
     }
     else {
         throw std::runtime_error("Dateiformat wurde nicht respektiert."); 
     }
     
-    return SAT(0);
+    return std::make_pair(SAT(0),0);
 }
 
 SAT dimacs_einlesen (char const * filename) {
@@ -53,8 +53,8 @@ SAT dimacs_einlesen (char const * filename) {
         std::string line;
         while (std::getline(file, line)) {
             if (line[0] == 'p') { //Anfangs des Inputs der boolschen Formel
-                unsigned int anz_klauseln = 0;
-                SAT instanz = SAT_initialisieren(line, anz_klauseln);//Einlesen der ersten Zeile und initialisieren
+                //unsigned int anz_klauseln = 0;
+                auto[instanz, anz_klauseln] = SAT_initialisieren(line);//Einlesen der ersten Zeile und initialisieren
 
                 //Einlesen und hinzufuegen von allen Klauseln:
                 for (KlauselIndex klausel_id = 0; klausel_id < anz_klauseln; klausel_id++) {

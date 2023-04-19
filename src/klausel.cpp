@@ -47,10 +47,10 @@ void Klausel::var_hinzu(const int var_mit_vz) {
 //Ausgeben der Klausel:
 void Klausel::print() const {
     std::cout << "Klausel " << klausel_id_ << ":  ";
-    for (const VariableIndex& var_id : var_positiv_) {
+    for (const VariableIndex var_id : var_positiv_) {
         std::cout << var_id << " ";
     }
-    for (const VariableIndex& var_id : var_negativ_) {
+    for (const VariableIndex var_id : var_negativ_) {
         std::cout << -var_id << " ";
     }
     std::cout << "\n";

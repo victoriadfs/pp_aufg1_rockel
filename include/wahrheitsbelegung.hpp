@@ -6,8 +6,8 @@ In den vectoren kommt immer ein id - 1 shift vor dem sich der user bewusst mache
 #include <vector>
 #include <iostream>
 #include <cassert>
+#include <typedef.hpp>
 #pragma once
-typedef unsigned int VariableIndex;
 
 enum class VariableWert {
     wahr,

@@ -1,3 +1,4 @@
+//Implementierung von belegung_wahr.hpp
 #include <belegung_wahr.hpp>
 
 bool belegung_erfullt_SAT (const SAT& instanz,const Wahrheitsbelegung& belegung) {

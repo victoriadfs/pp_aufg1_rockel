@@ -1,4 +1,4 @@
-//Momentan speichern der Variablen mit id-1
+//Implementierung SAT.hpp
 #include <SAT.hpp>
 
 SAT::SAT (const unsigned int anz_var):

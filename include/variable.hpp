@@ -1,9 +1,7 @@
 #include <vector>
 #include <cassert>
+#include <typedef.hpp>
 #pragma once
-
-typedef unsigned int VariableIndex;
-typedef unsigned int KlauselIndex;
 
 class Variable {
     public:
