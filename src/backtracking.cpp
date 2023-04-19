@@ -7,13 +7,8 @@ struct KlauselZustand {
     unsigned int anz_wahrer_variablen = 0;
 };
 
-class BacktrackingZustand { 
-    public:
-    //Bei Inistialisierung: alle variablen auf ungesetzt
-    BacktrackingZustand(const SAT& instanz_):
-    instanz(instanz_), belegung(Wahrheitsbelegung(instanz.anz_var())), klausel_zustand(instanz.anz_klausel()) {}
-    
-    const SAT instanz;
+struct BacktrackingZustand {
+    const SAT& instanz;
     Wahrheitsbelegung belegung;
     std::vector<KlauselZustand> klausel_zustand;
 };
@@ -28,10 +23,10 @@ bool pruefe_ob_klausel_noch_wahr_werden_kann (const KlauselZustand& current_klau
     return false;
 }
 
-bool pruefe_ob_wiederspruch_und_zustand_klauseln_nach_setzten_variable_aktualisieren (BacktrackingZustand& current_zustand, const bool variable_wert_in_klausel, const std::vector<KlauselIndex>& klauseln_zu_aktualisieren) {
+bool pruefe_ob_widerspruch_und_zustand_klauseln_nach_setzten_variable_aktualisieren (BacktrackingZustand& current_zustand, const bool variable_wert_in_klausel, const std::vector<KlauselIndex>& klauseln_zu_aktualisieren) {
     //variable_wert_in_klausel stellt den Wert da den die Variable in der Klausel animmt:
     // ZB variable x ist wahr und tritt positiv in Klausel auf variable_wert_in_klausel=true, falls sie negativ auftaucht variable_wert_in_klausel=false
-    bool wiederspruch = false;
+    bool widerspruch = false;
     for (const KlauselIndex current_klausel: klauseln_zu_aktualisieren) {
         //Variable wird zum ersten Mal gesetzt
         current_zustand.klausel_zustand[current_klausel].anz_gesetzer_variablen++;
@@ -41,30 +36,27 @@ bool pruefe_ob_wiederspruch_und_zustand_klauseln_nach_setzten_variable_aktualisi
         }
         else {
             if (!pruefe_ob_klausel_noch_wahr_werden_kann(current_zustand.klausel_zustand[current_klausel], current_zustand.instanz.klausel(current_klausel))) {
-                wiederspruch = true;
+                widerspruch = true;
             }
         }
     }
-    return wiederspruch;
+    return widerspruch;
 }
 
-bool pruefe_ob_wiederspruch_und_variable_neu_setzten (const VariableIndex current_variable, BacktrackingZustand& current_zustand, VariableWert variable_new_wert) {
-    bool wiederspruch = false;
+bool pruefe_ob_widerspruch_und_variable_neu_setzten (const VariableIndex current_variable, BacktrackingZustand& current_zustand, VariableWert variable_new_wert) {
     
     //Zustand der Klauseln in der die Variable vorkommt aktualisieren:
     //variable_wert_in_klausel stellt den Wert da den die Variable in der Klausel animmt:
     //ZB variable x ist wahr und tritt positiv in Klausel auf variable_wert_in_klausel = true, falls sie negativ auftaucht variable_wert_in_klausel = false
     bool variable_wert_in_klausel = (VariableWert::wahr == variable_new_wert);
-    wiederspruch = pruefe_ob_wiederspruch_und_zustand_klauseln_nach_setzten_variable_aktualisieren(current_zustand, variable_wert_in_klausel, current_zustand.instanz.var(current_variable).klausel_wahr());
+    bool const widerspruch_im_wahren_vorkommen = pruefe_ob_widerspruch_und_zustand_klauseln_nach_setzten_variable_aktualisieren(current_zustand, variable_wert_in_klausel, current_zustand.instanz.var(current_variable).klausel_wahr());
     variable_wert_in_klausel = not(variable_wert_in_klausel);
-    if (pruefe_ob_wiederspruch_und_zustand_klauseln_nach_setzten_variable_aktualisieren(current_zustand, variable_wert_in_klausel, current_zustand.instanz.var(current_variable).klausel_falsch())) {
-        wiederspruch = true;
-    }
+    bool const widerspruch_im_falschen_vorkommen = pruefe_ob_widerspruch_und_zustand_klauseln_nach_setzten_variable_aktualisieren(current_zustand, variable_wert_in_klausel, current_zustand.instanz.var(current_variable).klausel_falsch());
     
     //Aktualisieren Variable:
     current_zustand.belegung.var_wert_aendern(current_variable, variable_new_wert);
     
-    return wiederspruch; //Wenn es beim Aktualisieren der Klauseln zu keinem Wiederspruch gekommen ist, ist die Belegung bis zum Moment gueltig und man kann die naechste Variable setzten
+    return widerspruch_im_wahren_vorkommen or widerspruch_im_falschen_vorkommen; //Wenn es beim Aktualisieren der Klauseln zu keinem Wiederspruch gekommen ist, ist die Belegung bis zum Moment gueltig und man kann die naechste Variable setzten
 }
 
 
@@ -101,7 +93,7 @@ void reset_variable (const VariableIndex current_variable, BacktrackingZustand& 
  */
 
 std::optional<Wahrheitsbelegung> loese_mit_backtracking_algo(const SAT& instanz) {
-    BacktrackingZustand current_zustand = BacktrackingZustand(instanz); //Initialisierung auf alle Variablen ungesetzt
+    BacktrackingZustand current_zustand {instanz, Wahrheitsbelegung(instanz.anz_var()), std::vector<KlauselZustand>(instanz.anz_klausel())}; //Initialisierung auf alle Variablen ungesetzt
     VariableIndex current_variable = 1;
     while (current_variable > 0) {
         if (current_variable > instanz.anz_var()) { //Alle Variablen wurden ohne Wiederspruch belegt, somit eine Belegung gefunden
@@ -116,11 +108,11 @@ std::optional<Wahrheitsbelegung> loese_mit_backtracking_algo(const SAT& instanz)
         
         bool wiederspruch = false;
         if (current_zustand.belegung.var_wert(current_variable) == VariableWert::ungesetzt) { //Schritt 1
-            wiederspruch = pruefe_ob_wiederspruch_und_variable_neu_setzten(current_variable, current_zustand, VariableWert::wahr);
+            wiederspruch = pruefe_ob_widerspruch_und_variable_neu_setzten(current_variable, current_zustand, VariableWert::wahr);
         }
         else { //Schritt 2
             reset_variable(current_variable, current_zustand); //Wird gemacht, da in naechster Funktion angenommen wird, dass die Variable nicht gesetzt ist
-            wiederspruch = pruefe_ob_wiederspruch_und_variable_neu_setzten(current_variable, current_zustand, VariableWert::falsch);
+            wiederspruch = pruefe_ob_widerspruch_und_variable_neu_setzten(current_variable, current_zustand, VariableWert::falsch);
         }
 
         if (!wiederspruch) { 
